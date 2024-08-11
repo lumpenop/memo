@@ -6,6 +6,8 @@
  */
 
 import React from 'react';
+import './gesture-handler';
+
 import {
   SafeAreaView,
   StatusBar,
@@ -17,7 +19,6 @@ import {
 import { NavigationContainer } from '@react-navigation/native';
 
 import { RecoilRoot } from 'recoil';
-import Home from './src/screen/home/Home.tsx';
 import RootStack from './src/navigation/RootNavigation.tsx';
 
 const App = (): React.JSX.Element => {

@@ -6,6 +6,11 @@ export type NavigationPropType<T> = {
 };
 
 export type RootStackParamList = {
-  Home: undefined;
+  Root: undefined;
   Detail: undefined;
+};
+
+export type MenuDrawParamList = {
+  Home: undefined;
+  Menu: undefined;
 };
