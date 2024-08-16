@@ -1,8 +1,8 @@
 import React from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import { MenuDrawParamList } from '../types/navigationTypes.ts';
 import Home from '../screen/home/Home.tsx';
 import Menu from '../screen/menu/Menu.tsx';
-import { MenuDrawParamList } from '../types/navigationTypes.ts';
 
 const MenuNavigation = () => {
   const Drawer = createDrawerNavigator<MenuDrawParamList>();

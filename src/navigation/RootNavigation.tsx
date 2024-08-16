@@ -1,7 +1,7 @@
 import { createStackNavigator } from '@react-navigation/stack';
-import Detail from '../screen/detail/Detail.tsx';
 import { RootStackParamList } from '../types/navigationTypes.ts';
 import MenuNavigation from './MenuNavigation.tsx';
+import Detail from '../screen/detail/Detail.tsx';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
