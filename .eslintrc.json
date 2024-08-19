@@ -19,6 +19,16 @@
   },
   "plugins": ["prettier"],
   "rules": {
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "js": "always",
+        "jsx": "always",
+        "ts": "always",
+        "tsx": "always"
+      }
+    ],
     "arrow-body-style": "off",
     "semi": ["warn", "always"],
     "react/function-component-definition": ["warn", { "namedComponents": "arrow-function" }],

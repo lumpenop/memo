@@ -2917,11 +2917,6 @@ emoji-regex@^9.2.2:
 encodeurl@~1.0.2:
   version "1.0.2"
 
-encoding@^0.1.0:
-  version "0.1.13"
-  dependencies:
-    iconv-lite "^0.6.2"
-
 entities@^4.2.0, entities@^4.4.0:
   version "4.5.0"
   resolved "https://registry.npmjs.org/entities/-/entities-4.5.0.tgz"
@@ -3711,11 +3706,6 @@ http-errors@2.0.0:
 
 human-signals@^2.1.0:
   version "2.1.0"
-
-iconv-lite@^0.6.2:
-  version "0.6.3"
-  dependencies:
-    safer-buffer ">= 2.1.2 < 3.0.0"
 
 ieee754@^1.1.13:
   version "1.2.1"
@@ -5022,6 +5012,11 @@ optionator@^0.9.3:
     type-check "^0.4.0"
     word-wrap "^1.2.5"
 
+or@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.npmjs.org/or/-/or-0.2.0.tgz"
+  integrity sha512-BHB8VZq2isxkyRaCBZ6CZCbQBzCT+gy8LPiqdbMH1+Fd6biFj3v8ebjeYzzL51PbsApsPYnGegGTO6KLQMxxDw==
+
 ora@^5.4.1:
   version "5.4.1"
   dependencies:
@@ -5584,9 +5579,6 @@ safe-regex-test@^1.0.3:
     call-bind "^1.0.6"
     es-errors "^1.3.0"
     is-regex "^1.1.4"
-
-"safer-buffer@>= 2.1.2 < 3.0.0":
-  version "2.1.2"
 
 scheduler@^0.23.0:
   version "0.23.2"
