@@ -7,7 +7,7 @@ export type NavigationPropType<T> = {
 
 export type RootStackParamList = {
   Root: undefined;
-  Detail: undefined;
+  Detail: { id: number };
 };
 
 export type MenuDrawParamList = {
