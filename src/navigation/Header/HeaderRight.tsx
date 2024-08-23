@@ -1,6 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, View } from 'react-native';
-import { SEARCH } from '~/public/svgs';
+import { SEARCH } from '~/public/svgs/';
 
 const HeaderRight = () => {
   return (

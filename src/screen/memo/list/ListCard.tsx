@@ -11,13 +11,16 @@ const ListCard = ({ id }: Props) => {
   const { navigate } =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   return (
-    <TouchableOpacity onPress={() => navigate('Detail', { id })}>
+    <TouchableOpacity
+      activeOpacity={1}
+      onPress={() => navigate('Detail', { id })}>
       <View
         style={{
           width: '100%',
           borderBottomWidth: 1,
           paddingTop: 20,
           paddingBottom: 20,
+          paddingHorizontal: 4,
         }}>
         <Text style={{ fontWeight: '800' }}>Menu</Text>
         <Text>Menu</Text>
