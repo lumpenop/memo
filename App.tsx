@@ -6,33 +6,34 @@
  */
 
 import React from 'react';
-import './gesture-handler';
+import './gesture-handler.js';
 
-import {
-  SafeAreaView,
-  StatusBar,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import { SafeAreaView, StatusBar, useColorScheme } from 'react-native';
 
 import { NavigationContainer } from '@react-navigation/native';
+import Toast from 'react-native-toast-message';
 
 import { RecoilRoot } from 'recoil';
+import { toastConfig } from '~/components/toast/toastConfig.tsx';
 import RootStack from './src/navigation/RootNavigation.tsx';
 
 const App = (): React.JSX.Element => {
   const isDarkMode = useColorScheme() === 'dark';
 
   return (
-    <RecoilRoot>
-      <NavigationContainer>
-        <SafeAreaView style={{ flex: 1 }}>
-          <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-          <RootStack />
-        </SafeAreaView>
-      </NavigationContainer>
-    </RecoilRoot>
+    <>
+      <RecoilRoot>
+        <NavigationContainer>
+          <SafeAreaView style={{ flex: 1 }}>
+            <StatusBar
+              barStyle={isDarkMode ? 'light-content' : 'dark-content'}
+            />
+            <RootStack />
+          </SafeAreaView>
+        </NavigationContainer>
+      </RecoilRoot>
+      <Toast config={toastConfig} />
+    </>
   );
 };
 
