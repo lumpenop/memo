@@ -28,7 +28,7 @@ const Detail = ({ route }: Props) => {
     e: NativeSyntheticEvent<TextInputKeyPressEventData>,
   ) => {
     const { key } = e.nativeEvent;
-    if (key !== 'Backspace') return;
+    if (key !== 'Backspace' || content) return;
     refTitle.current?.focus();
   };
   return (
