@@ -5,10 +5,10 @@ import { SEARCH } from '~/public/svgs/';
 const HeaderRight = () => {
   return (
     <TouchableOpacity
-      style={{ right: 8, bottom: 2 }}
+      style={{ right: 10, bottom: 0 }}
       activeOpacity={0.4}
       onPress={() => console.log('hi')}>
-      <SEARCH width={24} />
+      <SEARCH width={22} />
     </TouchableOpacity>
   );
 };

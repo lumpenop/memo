@@ -6,7 +6,7 @@ import ScrollView = Animated.ScrollView;
 
 const List = () => {
   return (
-    <ScrollView style={{ marginHorizontal: 20 }}>
+    <ScrollView>
       <ListCard id={0} />
       <ListCard id={1} />
     </ScrollView>

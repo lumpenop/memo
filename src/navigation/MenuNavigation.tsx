@@ -1,5 +1,6 @@
 import React from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import Layout from '~/components/layout.tsx';
 import { MenuDrawParamList } from '../types/navigationTypes';
 import Home from '../screen/home/Home';
 import Menu from '../screen/menu/Menu';

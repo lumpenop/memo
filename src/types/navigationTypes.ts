@@ -1,3 +1,5 @@
+import { NativeStackScreenProps } from 'react-native-screens/native-stack';
+
 export type ValueOf<T> = T[keyof T];
 
 export type NavigationPropType<T> = {
@@ -11,6 +13,6 @@ export type RootStackParamList = {
 };
 
 export type MenuDrawParamList = {
-  Home: undefined;
+  Home: NativeStackScreenProps<RootStackParamList, 'Detail'>;
   Menu: undefined;
 };
