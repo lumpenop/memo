@@ -62,24 +62,30 @@ const Detail = ({ route }: Props) => {
 
   const context = useMemo(() => {
     return content.split('\n').map((text, index) => {
-      const splited = text.split(' ');
-      const startsWith = splited[0];
-      if (blockObjKeys.includes(startsWith)) {
+      const startsWith = blockObjKeys.filter(item => text.startsWith(item))[0];
+      if (startsWith) {
         const { fontSize, fontWeight, width, optionText } =
           contentBlockObj[startsWith as string];
         return (
-          <Text
-            key={`key=${index}`}
-            style={
-              {
-                width,
-                fontSize,
-                fontWeight,
-                paddingVertical: 3,
-              } as StyleProp<TextStyle>
-            }>
-            {optionText && optionText}
-            {`${text.split(startsWith)[1]}`}
+          <Text key={`key=${index}`}>
+            {optionText && (
+              <Text>
+                <Text
+                  style={{
+                    fontSize: 16,
+                  }}>
+                  {optionText}
+                </Text>
+              </Text>
+            )}
+            <Text
+              style={
+                {
+                  width,
+                  fontSize,
+                  fontWeight,
+                } as StyleProp<TextStyle>
+              }>{`${text.split(startsWith)[1]}`}</Text>
           </Text>
         );
       }

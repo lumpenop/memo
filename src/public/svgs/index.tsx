@@ -6,3 +6,4 @@ export { default as H1 } from './h1.svg';
 export { default as H2 } from './h2.svg';
 export { default as H3 } from './h3.svg';
 export { default as H4 } from './h4.svg';
+export { default as DOT } from './dot.svg';
