@@ -69,13 +69,11 @@ const Detail = ({ route }: Props) => {
         return (
           <Text key={`key=${index}`}>
             {optionText && (
-              <Text>
-                <Text
-                  style={{
-                    fontSize: 16,
-                  }}>
-                  {optionText}
-                </Text>
+              <Text
+                style={{
+                  fontSize: 18,
+                }}>
+                {optionText}
               </Text>
             )}
             <Text
