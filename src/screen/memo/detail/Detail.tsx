@@ -64,11 +64,13 @@ const Detail = ({ route }: Props) => {
     return content.split('\n').map((text, index) => {
       const startsWith = blockObjKeys.filter(item => text.startsWith(item))[0];
       if (startsWith) {
+        const resultText = text.split(startsWith)[1];
+        const isOptionText = startsWith === '- ' || !resultText;
         const { fontSize, fontWeight, width, optionText } =
           contentBlockObj[startsWith as string];
         return (
           <Text key={`key=${index}`}>
-            {optionText && (
+            {isOptionText && (
               <Text
                 style={{
                   fontSize: 18,
