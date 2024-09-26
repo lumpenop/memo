@@ -8,7 +8,12 @@
 import React from 'react';
 import './gesture-handler.js';
 
-import { SafeAreaView, StatusBar, useColorScheme } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  SafeAreaView,
+  StatusBar,
+  useColorScheme,
+} from 'react-native';
 
 import { NavigationContainer } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
@@ -28,7 +33,9 @@ const App = (): React.JSX.Element => {
             <StatusBar
               barStyle={isDarkMode ? 'light-content' : 'dark-content'}
             />
-            <RootStack />
+            <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
+              <RootStack />
+            </KeyboardAvoidingView>
           </SafeAreaView>
         </NavigationContainer>
       </RecoilRoot>

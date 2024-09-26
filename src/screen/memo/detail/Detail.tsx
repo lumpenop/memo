@@ -1,15 +1,19 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
   TextInput,
   TextInputKeyPressEventData,
   NativeSyntheticEvent,
+  ScrollView,
+  NativeScrollEvent,
+  StyleProp,
+  TextStyle,
 } from 'react-native';
 import { NativeStackScreenProps } from 'react-native-screens/native-stack';
 import Layout from '~/components/layout.tsx';
-import { HEADER } from '~/public/svgs';
+import { contentBlockObj } from '~/screen/memo/detail/detailContentObj.tsx';
+import DetailHeader from '~/screen/memo/detail/DetailHeader.tsx';
 import DetailTabBar from '~/screen/memo/detail/DetailTabBar.tsx';
 import { RootStackParamList } from '~/types/navigationTypes.ts';
 
@@ -17,9 +21,23 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Detail'>;
 const Detail = ({ route }: Props) => {
   const refTitle = useRef<TextInput>(null);
   const refContent = useRef<TextInput>(null);
+  const refContentHeight = useRef<number>(1);
+  const refInputHeight = useRef<number>(1);
+  const refScrollContentView = useRef<ScrollView>(null);
+  const refScrollInputView = useRef<ScrollView>(null);
   const { id } = route.params;
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
+  const [inputY, setInputY] = useState<number>();
+
+  useEffect(() => {
+    const debounce = setTimeout(() => {
+      refScrollContentView.current?.scrollTo({
+        y: inputY,
+      });
+    }, 40);
+    return () => clearTimeout(debounce);
+  }, [inputY]);
 
   const onTitleSubmit = () => {
     refContent.current?.focus();
@@ -31,37 +49,98 @@ const Detail = ({ route }: Props) => {
     if (key !== 'Backspace' || content) return;
     refTitle.current?.focus();
   };
+  const onChangeContent = (text: string) => {
+    setContent(text);
+  };
+
+  const onInputScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const ratio = refContentHeight.current / refInputHeight.current;
+    setInputY(e.nativeEvent.contentOffset.y * Math.round(ratio));
+  };
+
+  const blockObjKeys = Object.keys(contentBlockObj);
+
+  const context = useMemo(() => {
+    return content.split('\n').map((text, index) => {
+      const splited = text.split(' ');
+      const startsWith = splited[0];
+      if (blockObjKeys.includes(startsWith)) {
+        const { fontSize, fontWeight, width, optionText } =
+          contentBlockObj[startsWith as string];
+        return (
+          <Text
+            key={`key=${index}`}
+            style={
+              {
+                width,
+                fontSize,
+                fontWeight,
+                paddingVertical: 3,
+              } as StyleProp<TextStyle>
+            }>
+            {optionText && optionText}
+            {`${text.split(startsWith)[1]}`}
+          </Text>
+        );
+      }
+
+      return (
+        <Text
+          key={`key=${index}`}
+          style={{ width: '100%', paddingVertical: 2 }}>{`${text}`}</Text>
+      );
+    });
+  }, [content]);
+
   return (
     <View style={{ flex: 1 }}>
       <DetailTabBar />
       <Layout>
+        <DetailHeader
+          title={title}
+          setTitle={setTitle}
+          onTitleSubmit={onTitleSubmit}
+          ref={refTitle}
+        />
         <View
           style={{
+            flex: 1,
             display: 'flex',
-            flexDirection: 'row',
+            justifyContent: 'space-between',
             gap: 4,
-            alignItems: 'center',
           }}>
-          {!title && <HEADER width={24} height={24} />}
-          <TextInput
-            onChangeText={text => setTitle(text)}
-            value={title}
-            style={{ fontSize: 20, fontWeight: '600', height: 40 }}
-            onSubmitEditing={onTitleSubmit}
-            hitSlop={20}
-            ref={refTitle}
-          />
+          <View style={{ flex: 2 }}>
+            <ScrollView
+              ref={refScrollContentView}
+              onContentSizeChange={contentHeight => {
+                refContentHeight.current = contentHeight;
+              }}
+              scrollEventThrottle={1000}>
+              {context}
+            </ScrollView>
+          </View>
+          <View style={{ flex: 1 }}>
+            <ScrollView
+              ref={refScrollInputView}
+              onScroll={onInputScroll}
+              onContentSizeChange={contentHeight => {
+                refScrollInputView.current?.scrollToEnd({ animated: true });
+                refInputHeight.current = contentHeight;
+              }}>
+              <TextInput
+                multiline
+                onChangeText={onChangeContent}
+                value=""
+                style={{ fontSize: 16 }}
+                hitSlop={4}
+                ref={refContent}
+                scrollEnabled={false}
+                onKeyPress={onContentKeyPress}>
+                {content}
+              </TextInput>
+            </ScrollView>
+          </View>
         </View>
-        <TextInput
-          multiline
-          numberOfLines={10}
-          onChangeText={text => setContent(text)}
-          value={content}
-          style={{ fontSize: 16 }}
-          hitSlop={4}
-          ref={refContent}
-          onKeyPress={onContentKeyPress}
-        />
         <View />
       </Layout>
     </View>
