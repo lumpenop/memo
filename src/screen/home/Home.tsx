@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -11,12 +12,18 @@ import { RootStackParamList } from '~/types/navigationTypes.ts';
 import { PENCIL } from '~/public/svgs/';
 import Config from 'react-native-config';
 
+export interface IContent {
+  title: string;
+  birthtimeMs: number;
+  mtimeMs: number;
+}
 const Home = () => {
   const { navigate } =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [isFirst, setIsFirst] = useState(true);
   const [isAvailable, setIsAvailable] = useState<boolean>();
-  const [list, setList] = useState<string[]>([]);
+  const [list, setList] = useState<IContent[]>([]);
+  const [data, setData] = useState<string[]>([]);
 
   useEffect(() => {
     console.log(Config.DEFAULT_FOLDER, 'gg');
@@ -55,20 +62,29 @@ const Home = () => {
   useEffect(() => {
     CloudStorage.readdir(`/${Config.DEFAULT_FOLDER}`)
       .then(data => {
-        if (data.length > 0) {
-          const transformData = data.map(fileName => {
-            CloudStorage.stat(`/${Config.DEFAULT_FOLDER}/${fileName}`)
-              .then(stat => console.log(stat))
-              .catch(e => console.log(e));
-            return fileName.split('.')[0];
-          });
-
-          console.log(data);
-          setList(transformData);
-        }
+        setData(data);
       })
       .catch(e => console.log(e));
+    setList(prev => prev.sort((a, b) => a.birthtimeMs - b.birthtimeMs));
   }, []);
+
+  useEffect(() => {
+    if (data.length > 0) {
+      setList([]);
+      data.forEach(fileName => {
+        console.log(fileName);
+        CloudStorage.stat(`/${Config.DEFAULT_FOLDER}/${fileName}`).then(
+          async stat => {
+            const title = fileName.split('.')[0];
+            setList(prev => [
+              ...prev,
+              { title, birthtimeMs: stat.birthtimeMs, mtimeMs: stat.mtimeMs },
+            ]);
+          },
+        );
+      });
+    }
+  }, [data]);
 
   // useEffect(() => {
   //   if (!isAvailable) return;

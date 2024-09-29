@@ -25,6 +25,8 @@ const DetailTabBar = ({ content, title }: Props) => {
         text2: '제목을 작성해주세요',
         visibilityTime: 2000,
       });
+      pop();
+      return;
     }
     CloudStorage.writeFile(`/${Config.DEFAULT_FOLDER}/${title}.txt`, content)
       .then(data => {

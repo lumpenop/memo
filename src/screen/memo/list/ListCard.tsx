@@ -2,30 +2,50 @@ import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { NativeStackNavigationProp } from 'react-native-screens/native-stack';
+import { IContent } from '~/screen/home/Home.tsx';
 import { RootStackParamList } from '~/types/navigationTypes.ts';
+import dayjs from 'dayjs';
 
 interface Props {
-  title: string;
+  content: IContent;
 }
-const ListCard = ({ title }: Props) => {
+const ListCard = ({ content }: Props) => {
+  const { title, birthtimeMs, mtimeMs } = content;
   const { navigate } =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   return (
-    <TouchableOpacity
-      activeOpacity={1}
-      onPress={() => navigate('Detail', { title })}>
+    <View
+      style={{
+        display: 'flex',
+        justifyContent: 'space-around',
+        flexDirection: 'row',
+        borderBottomWidth: 1,
+      }}>
+      <TouchableOpacity
+        activeOpacity={1}
+        onPress={() => navigate('Detail', { title })}>
+        <View
+          style={{
+            width: '100%',
+
+            paddingTop: 20,
+            paddingBottom: 20,
+            gap: 6,
+          }}>
+          <Text style={{ fontWeight: '800', fontSize: 18 }}>{title}</Text>
+          <Text>Menu</Text>
+        </View>
+      </TouchableOpacity>
       <View
         style={{
-          width: '100%',
-          borderBottomWidth: 1,
-          paddingTop: 20,
-          paddingBottom: 20,
-          gap: 6,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
         }}>
-        <Text style={{ fontWeight: '800', fontSize: 18 }}>{title}</Text>
-        <Text>Menu</Text>
+        <Text>{dayjs(birthtimeMs).format('YYYY.MM.DD HH:mm:ss')}</Text>
+        <Text>{dayjs(mtimeMs).format('YYYY.MM.DD HH:mm:ss')}</Text>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 };
 
