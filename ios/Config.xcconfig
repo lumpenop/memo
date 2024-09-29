@@ -1,0 +1,10 @@
+#include? "tmp.xcconfig"
+
+//  Config.xcconfig
+//  AwesomeProject
+//
+//  Created by lumpen on 9/27/24.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974

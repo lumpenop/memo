@@ -4,11 +4,15 @@ import ListCard from '~/screen/memo/list/ListCard.tsx';
 
 import ScrollView = Animated.ScrollView;
 
-const List = () => {
+interface Props {
+  list: string[];
+}
+const List = ({ list }: Props) => {
   return (
     <ScrollView>
-      <ListCard id={0} />
-      <ListCard id={1} />
+      {list.map((title, i) => {
+        return <ListCard key={i + title} title={title} />;
+      })}
     </ScrollView>
   );
 };

@@ -25,7 +25,6 @@ const Detail = ({ route }: Props) => {
   const refInputHeight = useRef<number>(1);
   const refScrollContentView = useRef<ScrollView>(null);
   const refScrollInputView = useRef<ScrollView>(null);
-  const { id } = route.params;
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
   const [inputY, setInputY] = useState<number>();
@@ -74,6 +73,7 @@ const Detail = ({ route }: Props) => {
               <Text
                 style={{
                   fontSize: 18,
+                  paddingVertical: 1,
                 }}>
                 {optionText}
               </Text>
@@ -93,14 +93,14 @@ const Detail = ({ route }: Props) => {
       return (
         <Text
           key={`key=${index}`}
-          style={{ width: '100%', paddingVertical: 2 }}>{`${text}`}</Text>
+          style={{ width: '100%', paddingVertical: 2.5 }}>{`${text}`}</Text>
       );
     });
   }, [content]);
 
   return (
     <View style={{ flex: 1 }}>
-      <DetailTabBar />
+      <DetailTabBar content={content} title={title} />
       <Layout>
         <DetailHeader
           title={title}

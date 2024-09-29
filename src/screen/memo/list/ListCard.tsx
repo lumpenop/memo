@@ -5,24 +5,24 @@ import { NativeStackNavigationProp } from 'react-native-screens/native-stack';
 import { RootStackParamList } from '~/types/navigationTypes.ts';
 
 interface Props {
-  id: number;
+  title: string;
 }
-const ListCard = ({ id }: Props) => {
+const ListCard = ({ title }: Props) => {
   const { navigate } =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   return (
     <TouchableOpacity
       activeOpacity={1}
-      onPress={() => navigate('Detail', { id })}>
+      onPress={() => navigate('Detail', { title })}>
       <View
         style={{
           width: '100%',
           borderBottomWidth: 1,
           paddingTop: 20,
           paddingBottom: 20,
-          paddingHorizontal: 4,
+          gap: 6,
         }}>
-        <Text style={{ fontWeight: '800' }}>Menu</Text>
+        <Text style={{ fontWeight: '800', fontSize: 18 }}>{title}</Text>
         <Text>Menu</Text>
       </View>
     </TouchableOpacity>

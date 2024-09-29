@@ -9,31 +9,25 @@ import List from '~/screen/memo/list/List.tsx';
 import { isFirstRender } from '~/screen/menu/MenuFunc.ts';
 import { RootStackParamList } from '~/types/navigationTypes.ts';
 import { PENCIL } from '~/public/svgs/';
+import Config from 'react-native-config';
 
 const Home = () => {
-  const { content, read, write, remove } = useCloudFile('/test.txt');
   const { navigate } =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [isFirst, setIsFirst] = useState(true);
   const [isAvailable, setIsAvailable] = useState<boolean>();
-
-  const [counter, setCounter] = useState('');
-
-  useEffect(() => {
-    console.log(content, 'content');
-  }, [content]);
+  const [list, setList] = useState<string[]>([]);
 
   useEffect(() => {
-    if (!isAvailable) return;
-    write(String(counter)).catch(e => console.log(e));
-    CloudStorage.appendFile('/test.txt', String(content))
-      .then(data => console.log(data))
-      .catch(e => console.log(e));
-  }, [write, counter]);
+    console.log(Config.DEFAULT_FOLDER, 'gg');
+    if (isFirstRender(isFirst, setIsFirst)) {
+      isCloudAvailable().then();
+    }
+  }, []);
 
   const isCloudAvailable = async () => {
     const availableState = await CloudStorage.isCloudAvailable();
-    console.log('available', availableState);
+    console.log(availableState, 'isAvailable');
     if (!availableState) {
       Toast.show({
         type: 'error',
@@ -46,16 +40,38 @@ const Home = () => {
   };
 
   useEffect(() => {
-    if (isFirstRender(isFirst, setIsFirst)) {
-      isCloudAvailable()
-        .then()
-        .catch(e => console.log(e));
-    }
-
-    CloudStorage.readdir('/Documents')
-      .then(data => console.log(data, 'ㅇㅁㅅㅁ'))
-      .catch(e => console.log(e, 'ㅇㅁ'));
+    CloudStorage.exists(`/${Config.DEFAULT_FOLDER}`)
+      .then(data => {
+        console.log(data, `${Config.DEFAULT_FOLDER}`);
+        if (!data) {
+          CloudStorage.mkdir(`/${Config.DEFAULT_FOLDER}`)
+            .then(data => console.log(data))
+            .catch(e => console.log(e));
+        }
+      })
+      .catch(e => console.log(e, 'dd'));
   }, []);
+
+  CloudStorage.readdir(`/${Config.DEFAULT_FOLDER}`)
+    .then(data => {
+      if (data.length > 0) {
+        data.forEach(item => {
+          const a = CloudStorage.stat(`/${Config.DEFAULT_FOLDER}/${item}`);
+          console.log(a);
+        });
+        const transformData = data.map(fileName => fileName.split('.')[0]);
+        setList(transformData);
+      }
+    })
+    .catch(e => console.log(e));
+
+  // useEffect(() => {
+  //   if (!isAvailable) return;
+  //   write(String(counter)).catch(e => console.log(e));
+  //   CloudStorage.appendFile('/markdown/test.txt', String(content))
+  //     .then(data => console.log(data))
+  //     .catch(e => console.log(e));
+  // }, [write, counter]);
 
   return (
     <Layout>
@@ -65,9 +81,9 @@ const Home = () => {
           flexDirection: 'row',
           justifyContent: 'space-between',
         }}>
-        {!content ? <Text>글이 없어요</Text> : <List />}
+        {list.length === 0 ? <Text>글이 없어요</Text> : <List list={list} />}
         <TouchableOpacity
-          onPress={() => navigate('Detail', { id: 1 })}
+          onPress={() => navigate('Detail', { title: '' })}
           activeOpacity={0.85}
           style={{
             backgroundColor: 'tomato',
