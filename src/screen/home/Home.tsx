@@ -52,18 +52,23 @@ const Home = () => {
       .catch(e => console.log(e, 'dd'));
   }, []);
 
-  CloudStorage.readdir(`/${Config.DEFAULT_FOLDER}`)
-    .then(data => {
-      if (data.length > 0) {
-        data.forEach(item => {
-          const a = CloudStorage.stat(`/${Config.DEFAULT_FOLDER}/${item}`);
-          console.log(a);
-        });
-        const transformData = data.map(fileName => fileName.split('.')[0]);
-        setList(transformData);
-      }
-    })
-    .catch(e => console.log(e));
+  useEffect(() => {
+    CloudStorage.readdir(`/${Config.DEFAULT_FOLDER}`)
+      .then(data => {
+        if (data.length > 0) {
+          const transformData = data.map(fileName => {
+            CloudStorage.stat(`/${Config.DEFAULT_FOLDER}/${fileName}`)
+              .then(stat => console.log(stat))
+              .catch(e => console.log(e));
+            return fileName.split('.')[0];
+          });
+
+          console.log(data);
+          setList(transformData);
+        }
+      })
+      .catch(e => console.log(e));
+  }, []);
 
   // useEffect(() => {
   //   if (!isAvailable) return;
