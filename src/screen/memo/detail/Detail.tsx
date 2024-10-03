@@ -32,7 +32,8 @@ const Detail = ({ route }: Props) => {
   const [file, setFile] = useState<IFile>();
 
   useEffect(() => {
-    setTitle(route.params.title);
+    setTitle(route.params.content.title);
+    setContent(route.params.content.content);
   }, [route]);
 
   useEffect(() => {

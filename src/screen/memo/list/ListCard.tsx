@@ -6,11 +6,14 @@ import { IContent } from '~/screen/home/Home.tsx';
 import { RootStackParamList } from '~/types/navigationTypes.ts';
 import dayjs from 'dayjs';
 
-interface Props {
-  content: IContent;
-}
-const ListCard = ({ content }: Props) => {
-  const { title, birthtimeMs, mtimeMs } = content;
+type Props = IContent;
+const ListCard = ({
+  fileName,
+  title,
+  content,
+  birthtimeMs,
+  mtimeMs,
+}: Props) => {
   const { navigate } =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   return (
@@ -23,7 +26,11 @@ const ListCard = ({ content }: Props) => {
       }}>
       <TouchableOpacity
         activeOpacity={1}
-        onPress={() => navigate('Detail', { title })}>
+        onPress={() =>
+          navigate('Detail', {
+            content: { fileName, title, content, birthtimeMs, mtimeMs },
+          })
+        }>
         <View
           style={{
             width: '100%',
