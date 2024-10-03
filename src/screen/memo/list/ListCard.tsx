@@ -7,13 +7,7 @@ import { RootStackParamList } from '~/types/navigationTypes.ts';
 import dayjs from 'dayjs';
 
 type Props = IContent;
-const ListCard = ({
-  fileName,
-  title,
-  content,
-  birthtimeMs,
-  mtimeMs,
-}: Props) => {
+const ListCard = ({ fileName, title, content, mtimeMs }: Props) => {
   const { navigate } =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   return (
@@ -21,7 +15,7 @@ const ListCard = ({
       activeOpacity={1}
       onPress={() =>
         navigate('Detail', {
-          item: { fileName, title, content, birthtimeMs, mtimeMs },
+          item: { fileName, title, content, mtimeMs },
         })
       }>
       <View
@@ -48,7 +42,11 @@ const ListCard = ({
             alignItems: 'center',
             justifyContent: 'center',
           }}>
-          <Text>{dayjs(birthtimeMs).format('YYYY.MM.DD HH:mm:ss')}</Text>
+          <Text>
+            {dayjs(Number(fileName.split('.')[0])).format(
+              'YYYY.MM.DD HH:mm:ss',
+            )}
+          </Text>
           <Text>{dayjs(mtimeMs).format('YYYY.MM.DD HH:mm:ss')}</Text>
         </View>
       </View>

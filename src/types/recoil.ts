@@ -5,10 +5,6 @@ export interface IFile {
   title: string;
   content: string;
 }
-export const fileAtom = atom({
-  key: 'fileAtom',
-  default: { title: '', content: '' },
-});
 
 export const listAtom = atom<IContent[]>({
   key: 'listAtom',

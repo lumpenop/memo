@@ -1,4 +1,4 @@
-import React, { ForwardedRef, forwardRef } from 'react';
+import React, { forwardRef } from 'react';
 import { TextInput, View } from 'react-native';
 import { H1 } from '~/public/svgs';
 

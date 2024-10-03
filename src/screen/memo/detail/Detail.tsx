@@ -15,7 +15,6 @@ import Layout from '~/components/layout.tsx';
 import { contentBlockObj } from '~/screen/memo/detail/detailContentObj.tsx';
 import DetailHeader from '~/screen/memo/detail/DetailHeader.tsx';
 import DetailTabBar from '~/screen/memo/detail/DetailTabBar.tsx';
-import { IFile } from '~/types/recoil.ts';
 import { RootStackParamList } from '~/types/navigationTypes.ts';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Detail'>;
@@ -31,8 +30,8 @@ const Detail = ({ route }: Props) => {
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
   const [inputY, setInputY] = useState<number>();
-  const [file, setFile] = useState<IFile>();
   const [isEdit, setIsEdit] = useState<boolean>(false);
+  const { mtimeMs, fileName } = route.params.item;
 
   useEffect(() => {
     setTitle(route.params.item.title);
@@ -122,7 +121,13 @@ const Detail = ({ route }: Props) => {
 
   return (
     <View style={{ flex: 1 }}>
-      <DetailTabBar content={content} title={title} isEdit={isEdit} />
+      <DetailTabBar
+        fileName={fileName}
+        content={content}
+        title={title}
+        isEdit={isEdit}
+        mtimeMs={mtimeMs}
+      />
       <Layout>
         <DetailHeader
           title={title}

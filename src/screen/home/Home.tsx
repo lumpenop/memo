@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useTransition } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { CloudStorage } from 'react-native-cloud-storage';
@@ -14,13 +14,17 @@ import { isFirstRender } from '~/screen/menu/MenuFunc.ts';
 import { RootStackParamList } from '~/types/navigationTypes.ts';
 import { PENCIL } from '~/public/svgs/';
 import Config from 'react-native-config';
-import { dataAtom, folderLengthAtom, folderPathAtom } from '~/types/recoil.ts';
+import {
+  dataAtom,
+  folderLengthAtom,
+  folderPathAtom,
+  listAtom,
+} from '~/types/recoil.ts';
 
 export interface IContent {
   fileName: string;
   title: string;
   content: string;
-  birthtimeMs: number;
   mtimeMs: number;
 }
 
@@ -28,11 +32,12 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Root'>;
 const Home = ({ navigation }: Props) => {
   const { navigate } = navigation;
   const [isFirst, setIsFirst] = useState(true);
-  const [isAvailable, setIsAvailable] = useState<boolean>();
-  const [list, setList] = useState<IContent[]>([]);
+  const [, setIsAvailable] = useState<boolean>();
+  const [list, setList] = useRecoilState(listAtom);
   const [data, setData] = useRecoilState(dataAtom);
   const [, setFolderPath] = useRecoilState(folderPathAtom);
   const [, setFolderLength] = useRecoilState(folderLengthAtom);
+  const [, startTransition] = useTransition();
 
   useEffect(() => {
     setFolderPath(`${Config.DEFAULT_FOLDER}`);
@@ -73,6 +78,7 @@ const Home = ({ navigation }: Props) => {
   }, []);
 
   const getDatas = () => {
+    setList([]);
     CloudStorage.readdir(`/${Config.DEFAULT_FOLDER}`)
       .then(response => {
         console.log(response, 'response');
@@ -88,7 +94,6 @@ const Home = ({ navigation }: Props) => {
 
   useEffect(() => {
     if (data.length > 0) {
-      setList([]);
       data.forEach(fileName => {
         CloudStorage.readFile(`/${Config.DEFAULT_FOLDER}/${fileName}`)
           .then(item => {
@@ -98,17 +103,17 @@ const Home = ({ navigation }: Props) => {
               fileName,
               title,
               content,
-              birthtimeMs: 0,
               mtimeMs: 0,
             };
             CloudStorage.stat(`/${Config.DEFAULT_FOLDER}/${fileName}`).then(
               stat => {
-                const { birthtimeMs, mtimeMs } = stat;
-                fileObj.birthtimeMs = birthtimeMs;
+                const { mtimeMs } = stat;
                 fileObj.mtimeMs = mtimeMs;
-                setList(prev =>
-                  [...prev, fileObj].sort((a, b) => b.mtimeMs - a.mtimeMs),
-                );
+                startTransition(() => {
+                  setList(prev =>
+                    [...prev, fileObj].sort((a, b) => b.mtimeMs - a.mtimeMs),
+                  );
+                });
               },
             );
           })
@@ -141,7 +146,6 @@ const Home = ({ navigation }: Props) => {
                 fileName: '',
                 title: '',
                 content: '',
-                birthtimeMs: 0,
                 mtimeMs: 0,
               },
             })

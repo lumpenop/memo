@@ -5,21 +5,17 @@ import { NativeStackNavigationProp } from 'react-native-screens/native-stack';
 import Toast from 'react-native-toast-message';
 import { useRecoilState } from 'recoil';
 import { ARROW_BACK, LIST_MENU } from '~/public/svgs';
-import {
-  dataAtom,
-  folderLengthAtom,
-  folderPathAtom,
-  IFile,
-} from '~/types/recoil.ts';
+import { IContent } from '~/screen/home/Home.tsx';
+import { dataAtom, folderPathAtom, listAtom } from '~/types/recoil.ts';
 import { RootStackParamList } from '~/types/navigationTypes.ts';
 import { CloudStorage } from 'react-native-cloud-storage';
 import Config from 'react-native-config';
 
-type Props = IFile & { isEdit: boolean };
-const DetailTabBar = ({ content, title, isEdit }: Props) => {
-  const [folderLength, setFolderLength] = useRecoilState(folderLengthAtom);
+type Props = IContent & { isEdit: boolean };
+const DetailTabBar = ({ content, title, isEdit, fileName, mtimeMs }: Props) => {
   const [folderPath, setFolderPath] = useRecoilState(folderPathAtom);
   const [data, setData] = useRecoilState(dataAtom);
+  const [list, setList] = useRecoilState(listAtom);
   const { pop } =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
@@ -38,22 +34,21 @@ const DetailTabBar = ({ content, title, isEdit }: Props) => {
       pop();
       return;
     }
+    setList([]);
     CloudStorage.writeFile(
-      `/${folderPath}/${Date.now()}.txt`,
+      `/${folderPath}/${fileName || `${Date.now()}.txt`}`,
       JSON.stringify({ content, title }),
     )
       .then(res => {
+        console.log(fileName, 'fileName');
         CloudStorage.readdir(`/${Config.DEFAULT_FOLDER}`)
           .then(response => {
             setData(response);
           })
           .catch(e => console.log(e));
-
         pop();
       })
       .catch(err => {
-        console.log(err);
-        console.log(JSON.stringify({ content, title }));
         Toast.show({
           type: 'error',
           text1: '',
