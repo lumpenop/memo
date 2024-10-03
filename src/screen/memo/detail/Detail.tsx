@@ -20,25 +20,35 @@ import { RootStackParamList } from '~/types/navigationTypes.ts';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Detail'>;
 const Detail = ({ route }: Props) => {
-  const refTitle = useRef<TextInput>(null);
-  const refContent = useRef<TextInput>(null);
+  const refTitleInput = useRef<TextInput>(null);
+  const refContentInput = useRef<TextInput>(null);
   const refContentHeight = useRef<number>(1);
   const refInputHeight = useRef<number>(1);
   const refScrollContentView = useRef<ScrollView>(null);
   const refScrollInputView = useRef<ScrollView>(null);
+  const refTitle = useRef<string>('');
+  const refContent = useRef<string>('');
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
   const [inputY, setInputY] = useState<number>();
   const [file, setFile] = useState<IFile>();
+  const [isEdit, setIsEdit] = useState<boolean>(false);
 
   useEffect(() => {
-    setTitle(route.params.content.title);
-    setContent(route.params.content.content);
+    setTitle(route.params.item.title);
+    setContent(route.params.item.content);
+    refTitle.current = route.params.item.title;
+    refContent.current = route.params.item.content;
   }, [route]);
 
   useEffect(() => {
-    if (!file) return;
-    setFile({ title, content });
+    console.log(isEdit);
+  }, [isEdit]);
+
+  useEffect(() => {
+    if (!title) return;
+    if (refTitle.current === title && refContent.current === content) return;
+    setIsEdit(true);
   }, [content, title]);
 
   useEffect(() => {
@@ -51,14 +61,14 @@ const Detail = ({ route }: Props) => {
   }, [inputY]);
 
   const onTitleSubmit = () => {
-    refContent.current?.focus();
+    refContentInput.current?.focus();
   };
   const onContentKeyPress = (
     e: NativeSyntheticEvent<TextInputKeyPressEventData>,
   ) => {
     const { key } = e.nativeEvent;
     if (key !== 'Backspace' || content) return;
-    refTitle.current?.focus();
+    refTitleInput.current?.focus();
   };
   const onChangeContent = (text: string) => {
     setContent(text);
@@ -112,13 +122,13 @@ const Detail = ({ route }: Props) => {
 
   return (
     <View style={{ flex: 1 }}>
-      <DetailTabBar content={content} title={title} />
+      <DetailTabBar content={content} title={title} isEdit={isEdit} />
       <Layout>
         <DetailHeader
           title={title}
           setTitle={setTitle}
           onTitleSubmit={onTitleSubmit}
-          ref={refTitle}
+          ref={refTitleInput}
         />
         <View
           style={{
@@ -151,7 +161,7 @@ const Detail = ({ route }: Props) => {
                 value=""
                 style={{ fontSize: 16 }}
                 hitSlop={4}
-                ref={refContent}
+                ref={refContentInput}
                 scrollEnabled={false}
                 onKeyPress={onContentKeyPress}>
                 {content}

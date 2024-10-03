@@ -11,8 +11,17 @@ interface Props {
 const List = ({ list }: Props) => {
   return (
     <ScrollView>
-      {list.map((content, i) => {
-        return <ListCard key={i + content.title} content={content} />;
+      {list.map((item, i) => {
+        return (
+          <ListCard
+            key={i + item.title}
+            fileName={item.fileName}
+            title={item.title}
+            content={item.content}
+            birthtimeMs={item.birthtimeMs}
+            mtimeMs={item.mtimeMs}
+          />
+        );
       })}
     </ScrollView>
   );

@@ -11,7 +11,7 @@ export const fileAtom = atom({
 });
 
 export const listAtom = atom<IContent[]>({
-  key: 'fileAtom',
+  key: 'listAtom',
   default: [],
 });
 

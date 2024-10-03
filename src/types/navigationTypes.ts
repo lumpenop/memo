@@ -10,7 +10,7 @@ export type NavigationPropType<T> = {
 
 export type RootStackParamList = {
   Root: undefined;
-  Detail: { content: IContent };
+  Detail: { item: IContent };
 };
 
 export type MenuDrawParamList = {

@@ -36,6 +36,7 @@ const Home = ({ navigation }: Props) => {
 
   useEffect(() => {
     setFolderPath(`${Config.DEFAULT_FOLDER}`);
+    // CloudStorage.rmdir(`${Config.DEFAULT_FOLDER}`, { recursive: true });
   }, []);
 
   useEffect(() => {
@@ -134,7 +135,17 @@ const Home = ({ navigation }: Props) => {
         }}>
         {list.length === 0 ? <Text>글이 없어요</Text> : <List list={list} />}
         <TouchableOpacity
-          onPress={() => navigate('Detail', { title: '' })}
+          onPress={() =>
+            navigate('Detail', {
+              item: {
+                fileName: '',
+                title: '',
+                content: '',
+                birthtimeMs: 0,
+                mtimeMs: 0,
+              },
+            })
+          }
           activeOpacity={0.85}
           style={{
             backgroundColor: 'tomato',

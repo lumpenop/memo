@@ -17,24 +17,24 @@ const ListCard = ({
   const { navigate } =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   return (
-    <View
-      style={{
-        display: 'flex',
-        justifyContent: 'space-around',
-        flexDirection: 'row',
-        borderBottomWidth: 1,
-      }}>
-      <TouchableOpacity
-        activeOpacity={1}
-        onPress={() =>
-          navigate('Detail', {
-            content: { fileName, title, content, birthtimeMs, mtimeMs },
-          })
-        }>
+    <TouchableOpacity
+      activeOpacity={1}
+      onPress={() =>
+        navigate('Detail', {
+          item: { fileName, title, content, birthtimeMs, mtimeMs },
+        })
+      }>
+      <View
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          paddingHorizontal: 8,
+          flexDirection: 'row',
+          borderBottomWidth: 1,
+          width: '100%',
+        }}>
         <View
           style={{
-            width: '100%',
-
             paddingTop: 20,
             paddingBottom: 20,
             gap: 6,
@@ -42,17 +42,17 @@ const ListCard = ({
           <Text style={{ fontWeight: '800', fontSize: 18 }}>{title}</Text>
           <Text>Menu</Text>
         </View>
-      </TouchableOpacity>
-      <View
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}>
-        <Text>{dayjs(birthtimeMs).format('YYYY.MM.DD HH:mm:ss')}</Text>
-        <Text>{dayjs(mtimeMs).format('YYYY.MM.DD HH:mm:ss')}</Text>
+        <View
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <Text>{dayjs(birthtimeMs).format('YYYY.MM.DD HH:mm:ss')}</Text>
+          <Text>{dayjs(mtimeMs).format('YYYY.MM.DD HH:mm:ss')}</Text>
+        </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
