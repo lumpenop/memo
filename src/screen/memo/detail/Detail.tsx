@@ -15,6 +15,7 @@ import Layout from '~/components/layout.tsx';
 import { contentBlockObj } from '~/screen/memo/detail/detailContentObj.tsx';
 import DetailHeader from '~/screen/memo/detail/DetailHeader.tsx';
 import DetailTabBar from '~/screen/memo/detail/DetailTabBar.tsx';
+import { IFile } from '~/types/recoil.ts';
 import { RootStackParamList } from '~/types/navigationTypes.ts';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Detail'>;
@@ -28,6 +29,16 @@ const Detail = ({ route }: Props) => {
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
   const [inputY, setInputY] = useState<number>();
+  const [file, setFile] = useState<IFile>();
+
+  useEffect(() => {
+    setTitle(route.params.title);
+  }, [route]);
+
+  useEffect(() => {
+    if (!file) return;
+    setFile({ title, content });
+  }, [content, title]);
 
   useEffect(() => {
     const debounce = setTimeout(() => {

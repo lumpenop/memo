@@ -1,32 +1,44 @@
-import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { CloudStorage, useCloudFile } from 'react-native-cloud-storage';
-import { NativeStackNavigationProp } from 'react-native-screens/native-stack';
+import { CloudStorage } from 'react-native-cloud-storage';
+import {
+  NativeStackNavigationProp,
+  NativeStackScreenProps,
+} from 'react-native-screens/native-stack';
 import Toast from 'react-native-toast-message';
+import { useRecoilState } from 'recoil';
 import Layout from '~/components/layout.tsx';
 import List from '~/screen/memo/list/List.tsx';
 import { isFirstRender } from '~/screen/menu/MenuFunc.ts';
 import { RootStackParamList } from '~/types/navigationTypes.ts';
 import { PENCIL } from '~/public/svgs/';
 import Config from 'react-native-config';
+import { dataAtom, folderLengthAtom, folderPathAtom } from '~/types/recoil.ts';
 
 export interface IContent {
+  fileName: string;
   title: string;
+  content: string;
   birthtimeMs: number;
   mtimeMs: number;
 }
-const Home = () => {
-  const { navigate } =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+type Props = NativeStackScreenProps<RootStackParamList, 'Root'>;
+const Home = ({ navigation }: Props) => {
+  const { navigate } = navigation;
   const [isFirst, setIsFirst] = useState(true);
   const [isAvailable, setIsAvailable] = useState<boolean>();
   const [list, setList] = useState<IContent[]>([]);
-  const [data, setData] = useState<string[]>([]);
+  const [data, setData] = useRecoilState(dataAtom);
+  const [, setFolderPath] = useRecoilState(folderPathAtom);
+  const [, setFolderLength] = useRecoilState(folderLengthAtom);
 
   useEffect(() => {
-    console.log(Config.DEFAULT_FOLDER, 'gg');
+    setFolderPath(`${Config.DEFAULT_FOLDER}`);
+  }, []);
+
+  useEffect(() => {
     if (isFirstRender(isFirst, setIsFirst)) {
       isCloudAvailable().then();
     }
@@ -48,40 +60,58 @@ const Home = () => {
 
   useEffect(() => {
     CloudStorage.exists(`/${Config.DEFAULT_FOLDER}`)
-      .then(data => {
-        console.log(data, `${Config.DEFAULT_FOLDER}`);
-        if (!data) {
+      .then(response => {
+        console.log(response, `${Config.DEFAULT_FOLDER}`);
+        if (!response) {
           CloudStorage.mkdir(`/${Config.DEFAULT_FOLDER}`)
-            .then(data => console.log(data))
+            .then(res => console.log(res))
             .catch(e => console.log(e));
         }
       })
       .catch(e => console.log(e, 'dd'));
   }, []);
 
-  useEffect(() => {
+  const getDatas = () => {
     CloudStorage.readdir(`/${Config.DEFAULT_FOLDER}`)
-      .then(data => {
-        setData(data);
+      .then(response => {
+        console.log(response, 'response');
+        setData(response);
+        setFolderLength(response.length);
       })
       .catch(e => console.log(e));
-    setList(prev => prev.sort((a, b) => a.birthtimeMs - b.birthtimeMs));
+  };
+
+  useEffect(() => {
+    getDatas();
   }, []);
 
   useEffect(() => {
     if (data.length > 0) {
       setList([]);
       data.forEach(fileName => {
-        console.log(fileName);
-        CloudStorage.stat(`/${Config.DEFAULT_FOLDER}/${fileName}`).then(
-          async stat => {
-            const title = fileName.split('.')[0];
-            setList(prev => [
-              ...prev,
-              { title, birthtimeMs: stat.birthtimeMs, mtimeMs: stat.mtimeMs },
-            ]);
-          },
-        );
+        CloudStorage.readFile(`/${Config.DEFAULT_FOLDER}/${fileName}`)
+          .then(item => {
+            const transformData = JSON.parse(item);
+            const { title, content } = transformData;
+            const fileObj: IContent = {
+              fileName,
+              title,
+              content,
+              birthtimeMs: 0,
+              mtimeMs: 0,
+            };
+            CloudStorage.stat(`/${Config.DEFAULT_FOLDER}/${fileName}`).then(
+              stat => {
+                const { birthtimeMs, mtimeMs } = stat;
+                fileObj.birthtimeMs = birthtimeMs;
+                fileObj.mtimeMs = mtimeMs;
+                setList(prev =>
+                  [...prev, fileObj].sort((a, b) => b.mtimeMs - a.mtimeMs),
+                );
+              },
+            );
+          })
+          .catch(e => console.log(e));
       });
     }
   }, [data]);
