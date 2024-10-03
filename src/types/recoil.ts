@@ -1,4 +1,5 @@
 import { atom } from 'recoil';
+import { IContent } from '~/screen/home/Home.tsx';
 
 export interface IFile {
   title: string;
@@ -7,6 +8,11 @@ export interface IFile {
 export const fileAtom = atom({
   key: 'fileAtom',
   default: { title: '', content: '' },
+});
+
+export const listAtom = atom<IContent[]>({
+  key: 'fileAtom',
+  default: [],
 });
 
 export const dataAtom = atom<string[]>({

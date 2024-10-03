@@ -14,7 +14,12 @@ import { isFirstRender } from '~/screen/menu/MenuFunc.ts';
 import { RootStackParamList } from '~/types/navigationTypes.ts';
 import { PENCIL } from '~/public/svgs/';
 import Config from 'react-native-config';
-import { dataAtom, folderLengthAtom, folderPathAtom } from '~/types/recoil.ts';
+import {
+  dataAtom,
+  folderLengthAtom,
+  folderPathAtom,
+  listAtom,
+} from '~/types/recoil.ts';
 
 export interface IContent {
   fileName: string;
@@ -29,7 +34,7 @@ const Home = ({ navigation }: Props) => {
   const { navigate } = navigation;
   const [isFirst, setIsFirst] = useState(true);
   const [isAvailable, setIsAvailable] = useState<boolean>();
-  const [list, setList] = useState<IContent[]>([]);
+  const [list, setList] = useRecoilState(listAtom);
   const [data, setData] = useRecoilState(dataAtom);
   const [, setFolderPath] = useRecoilState(folderPathAtom);
   const [, setFolderLength] = useRecoilState(folderLengthAtom);
