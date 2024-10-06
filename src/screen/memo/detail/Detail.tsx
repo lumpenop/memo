@@ -9,11 +9,12 @@ import {
   NativeScrollEvent,
   StyleProp,
   TextStyle,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import { NativeStackScreenProps } from 'react-native-screens/native-stack';
 import Layout from '~/components/layout.tsx';
 import { contentBlockObj } from '~/screen/memo/detail/detailContentObj.tsx';
-import DetailHeader from '~/screen/memo/detail/DetailHeader.tsx';
+import DetailHeaderWithTitle from '~/screen/memo/detail/DetailHeaderWithTitle.tsx';
 import DetailTabBar from '~/screen/memo/detail/DetailTabBar.tsx';
 import { RootStackParamList } from '~/types/navigationTypes.ts';
 
@@ -31,6 +32,7 @@ const Detail = ({ route }: Props) => {
   const [content, setContent] = useState<string>('');
   const [inputY, setInputY] = useState<number>();
   const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const { mtimeMs, fileName } = route.params.item;
 
   useEffect(() => {
@@ -120,63 +122,69 @@ const Detail = ({ route }: Props) => {
   }, [content]);
 
   return (
-    <View style={{ flex: 1 }}>
-      <DetailTabBar
-        fileName={fileName}
-        content={content}
-        title={title}
-        isEdit={isEdit}
-        mtimeMs={mtimeMs}
-      />
-      <Layout>
-        <DetailHeader
+    <TouchableWithoutFeedback onPress={() => setIsMenuOpen(false)}>
+      <View style={{ flex: 1 }}>
+        <DetailTabBar
+          fileName={fileName}
+          content={content}
           title={title}
-          setTitle={setTitle}
-          onTitleSubmit={onTitleSubmit}
-          ref={refTitleInput}
+          isEdit={isEdit}
+          mtimeMs={mtimeMs}
+          setIsMenuOpen={setIsMenuOpen}
+          isMenuOpen={isMenuOpen}
         />
-        <View
-          style={{
-            flex: 1,
-            display: 'flex',
-            justifyContent: 'space-between',
-            gap: 4,
-          }}>
-          <View style={{ flex: 2 }}>
-            <ScrollView
-              ref={refScrollContentView}
-              onContentSizeChange={contentHeight => {
-                refContentHeight.current = contentHeight;
-              }}
-              scrollEventThrottle={1000}>
-              {context}
-            </ScrollView>
+        <Layout>
+          <DetailHeaderWithTitle
+            title={title}
+            setTitle={setTitle}
+            onTitleSubmit={onTitleSubmit}
+            ref={refTitleInput}
+            setIsMenuOpen={setIsMenuOpen}
+          />
+          <View
+            style={{
+              flex: 1,
+              display: 'flex',
+              justifyContent: 'space-between',
+              gap: 4,
+            }}>
+            <View style={{ flex: 2 }}>
+              <ScrollView
+                ref={refScrollContentView}
+                onContentSizeChange={contentHeight => {
+                  refContentHeight.current = contentHeight;
+                }}
+                scrollEventThrottle={1000}>
+                {context}
+              </ScrollView>
+            </View>
+            <View style={{ flex: 1 }}>
+              <ScrollView
+                ref={refScrollInputView}
+                onScroll={onInputScroll}
+                onContentSizeChange={contentHeight => {
+                  refScrollInputView.current?.scrollToEnd({ animated: true });
+                  refInputHeight.current = contentHeight;
+                }}>
+                <TextInput
+                  multiline
+                  onChangeText={onChangeContent}
+                  value=""
+                  style={{ fontSize: 16 }}
+                  hitSlop={4}
+                  ref={refContentInput}
+                  scrollEnabled={false}
+                  onKeyPress={onContentKeyPress}
+                  onFocus={() => setIsMenuOpen(false)}>
+                  {content}
+                </TextInput>
+              </ScrollView>
+            </View>
           </View>
-          <View style={{ flex: 1 }}>
-            <ScrollView
-              ref={refScrollInputView}
-              onScroll={onInputScroll}
-              onContentSizeChange={contentHeight => {
-                refScrollInputView.current?.scrollToEnd({ animated: true });
-                refInputHeight.current = contentHeight;
-              }}>
-              <TextInput
-                multiline
-                onChangeText={onChangeContent}
-                value=""
-                style={{ fontSize: 16 }}
-                hitSlop={4}
-                ref={refContentInput}
-                scrollEnabled={false}
-                onKeyPress={onContentKeyPress}>
-                {content}
-              </TextInput>
-            </ScrollView>
-          </View>
-        </View>
-        <View />
-      </Layout>
-    </View>
+          <View />
+        </Layout>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 

@@ -1,23 +1,49 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useRef } from 'react';
-import { View, Text, TouchableOpacity, TextInput } from 'react-native';
+import React, { useRef, useState } from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  TextInput,
+  TouchableWithoutFeedback,
+} from 'react-native';
 import { NativeStackNavigationProp } from 'react-native-screens/native-stack';
 import Toast from 'react-native-toast-message';
 import { useRecoilState } from 'recoil';
-import { ARROW_BACK, LIST_MENU } from '~/public/svgs';
+import { ARROW_BACK, LIST_MENU, TRASH_BIN } from '~/public/svgs';
 import { IContent } from '~/screen/home/Home.tsx';
 import { dataAtom, folderPathAtom, listAtom } from '~/types/recoil.ts';
 import { RootStackParamList } from '~/types/navigationTypes.ts';
 import { CloudStorage } from 'react-native-cloud-storage';
 import Config from 'react-native-config';
 
-type Props = IContent & { isEdit: boolean };
-const DetailTabBar = ({ content, title, isEdit, fileName, mtimeMs }: Props) => {
-  const [folderPath, setFolderPath] = useRecoilState(folderPathAtom);
-  const [data, setData] = useRecoilState(dataAtom);
-  const [list, setList] = useRecoilState(listAtom);
+type Props = IContent & {
+  isEdit: boolean;
+  setIsMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  isMenuOpen: boolean;
+};
+const DetailTabBar = ({
+  content,
+  title,
+  isEdit,
+  fileName,
+  mtimeMs,
+  setIsMenuOpen,
+  isMenuOpen,
+}: Props) => {
+  const [folderPath] = useRecoilState(folderPathAtom);
+  const [, setData] = useRecoilState(dataAtom);
+  const [, setList] = useRecoilState(listAtom);
   const { pop } =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+  const menuList = [
+    {
+      title: '휴지통으로 이동',
+      onPress: () => console.log('hi'),
+      icon: <TRASH_BIN width={18} height={18} />,
+    },
+  ];
 
   const onPressBackButton = () => {
     if (!title) {
@@ -69,13 +95,48 @@ const DetailTabBar = ({ content, title, isEdit, fileName, mtimeMs }: Props) => {
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingHorizontal: 8,
+        position: 'relative',
       }}>
       <TouchableOpacity onPress={onPressBackButton} activeOpacity={0.8}>
         <ARROW_BACK height={30} width={30} />
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => pop()} activeOpacity={0.8}>
+      <TouchableOpacity
+        onPress={() => setIsMenuOpen(prev => !prev)}
+        activeOpacity={0.8}>
         <LIST_MENU height={22} width={24} />
       </TouchableOpacity>
+      {isMenuOpen && (
+        <View
+          style={{
+            position: 'absolute',
+            bottom: -30,
+            right: 0,
+            gap: 10,
+            backgroundColor: 'white',
+            borderRadius: 6,
+          }}>
+          {menuList.map((item, i) => {
+            return (
+              <TouchableOpacity key={i + item.title} onPress={item.onPress}>
+                <View
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    width: '100%',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: 8,
+                  }}>
+                  {item.icon}
+                  <Text style={{ color: 'red', fontSize: 16 }}>
+                    {item.title}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+      )}
     </View>
   );
 };

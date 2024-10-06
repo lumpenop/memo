@@ -6,26 +6,35 @@ interface forwardRefProps {
   title: string;
   setTitle: React.Dispatch<React.SetStateAction<string>>;
   onTitleSubmit: () => void;
+  setIsMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const DetailHeader = forwardRef<TextInput, forwardRefProps>(
-  ({ title, setTitle, onTitleSubmit }: forwardRefProps, ref) => {
+const DetailHeaderWithTitle = forwardRef<TextInput, forwardRefProps>(
+  ({ title, setTitle, onTitleSubmit, setIsMenuOpen }: forwardRefProps, ref) => {
     return (
       <Header
         title={title}
         setTitle={setTitle}
         refTitle={ref}
         onTitleSubmit={onTitleSubmit}
+        setIsMenuOpen={setIsMenuOpen}
       />
     );
   },
 );
-DetailHeader.displayName = 'Header';
+DetailHeaderWithTitle.displayName = 'Header';
 
 type HeaderProps = forwardRefProps & {
   refTitle: React.ForwardedRef<TextInput>;
+  setIsMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
-const Header = ({ title, setTitle, refTitle, onTitleSubmit }: HeaderProps) => {
+const Header = ({
+  title,
+  setTitle,
+  refTitle,
+  onTitleSubmit,
+  setIsMenuOpen,
+}: HeaderProps) => {
   return (
     <View
       style={{
@@ -44,6 +53,7 @@ const Header = ({ title, setTitle, refTitle, onTitleSubmit }: HeaderProps) => {
           height: 40,
           width: '100%',
         }}
+        onFocus={() => setIsMenuOpen(false)}
         onSubmitEditing={onTitleSubmit}
         hitSlop={20}
         ref={refTitle}
@@ -52,4 +62,4 @@ const Header = ({ title, setTitle, refTitle, onTitleSubmit }: HeaderProps) => {
   );
 };
 
-export default DetailHeader;
+export default DetailHeaderWithTitle;
