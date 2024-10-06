@@ -41,7 +41,7 @@ const DetailTabBar = ({
     {
       title: '휴지통으로 이동',
       onPress: () => console.log('hi'),
-      icon: <TRASH_BIN width={18} height={18} />,
+      icon: <TRASH_BIN width={16} height={16} fill="red" />,
     },
   ];
 
@@ -109,7 +109,7 @@ const DetailTabBar = ({
         <View
           style={{
             position: 'absolute',
-            bottom: -30,
+            bottom: -34,
             right: 0,
             gap: 10,
             backgroundColor: 'white',
