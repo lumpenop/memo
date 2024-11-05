@@ -1,5 +1,4 @@
 import React, { ReactNode } from 'react';
-import { Text, View } from 'react-native';
 import { DOT, H1, H2, H3, H4 } from '~/public/svgs';
 
 const fontWeightBold = 700;
@@ -35,6 +34,12 @@ export const contentBlockObj: IContentBlockObj = {
     width: '100%',
     fontSize: 20,
     optionText: <H1 />,
+  },
+  '#': {
+    fontWeight: fontWeightBold,
+    width: '100%',
+    fontSize: 16,
+    optionText: '',
   },
   '- ': {
     fontWeight: 'normal',

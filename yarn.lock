@@ -981,6 +981,11 @@
 "@eslint/js@8.57.0":
   version "8.57.0"
 
+"@expensify/react-native-live-markdown@^0.1.168":
+  version "0.1.168"
+  resolved "https://registry.npmjs.org/@expensify/react-native-live-markdown/-/react-native-live-markdown-0.1.168.tgz"
+  integrity sha512-NTyjM2+1dHcZxHFT+uHqXK7SMsssLTVWfmKtoVluJRjV3JTWdflpReD0EIjSnJbZodeyrFkiqCgqOsTLMUNaYg==
+
 "@hapi/hoek@^9.0.0", "@hapi/hoek@^9.3.0":
   version "9.3.0"
 

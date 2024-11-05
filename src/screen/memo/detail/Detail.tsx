@@ -1,21 +1,18 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
-  Text,
   TextInput,
   TextInputKeyPressEventData,
   NativeSyntheticEvent,
   ScrollView,
   NativeScrollEvent,
-  StyleProp,
-  TextStyle,
   TouchableWithoutFeedback,
 } from 'react-native';
 import { NativeStackScreenProps } from 'react-native-screens/native-stack';
 import Layout from '~/components/layout.tsx';
-import { contentBlockObj } from '~/screen/memo/detail/detailContentObj.tsx';
-import DetailHeaderWithTitle from '~/screen/memo/detail/DetailHeaderWithTitle.tsx';
-import DetailTabBar from '~/screen/memo/detail/DetailTabBar.tsx';
+import useContent from '~/screen/memo/detail/components/Context.tsx';
+import DetailHeaderWithTitle from '~/screen/memo/detail/components/DetailHeaderWithTitle.tsx';
+import DetailTabBar from '~/screen/memo/detail/components/DetailTabBar.tsx';
 import { RootStackParamList } from '~/types/navigationTypes.ts';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Detail'>;
@@ -80,46 +77,26 @@ const Detail = ({ route }: Props) => {
     setInputY(e.nativeEvent.contentOffset.y * Math.round(ratio));
   };
 
-  const blockObjKeys = Object.keys(contentBlockObj);
-
-  const context = useMemo(() => {
-    return content.split('\n').map((text, index) => {
-      const startsWith = blockObjKeys.filter(item => text.startsWith(item))[0];
-      if (startsWith) {
-        const resultText = text.split(startsWith)[1];
-        const isOptionText = startsWith === '- ' || !resultText;
-        const { fontSize, fontWeight, width, optionText } =
-          contentBlockObj[startsWith as string];
-        return (
-          <Text key={`key=${index}`}>
-            {isOptionText && (
-              <Text
-                style={{
-                  fontSize: 18,
-                  paddingVertical: 1,
-                }}>
-                {optionText}
-              </Text>
-            )}
-            <Text
-              style={
-                {
-                  width,
-                  fontSize,
-                  fontWeight,
-                } as StyleProp<TextStyle>
-              }>{`${text.split(startsWith)[1]}`}</Text>
-          </Text>
-        );
-      }
-
-      return (
-        <Text
-          key={`key=${index}`}
-          style={{ width: '100%', paddingVertical: 2.5 }}>{`${text}`}</Text>
-      );
-    });
-  }, [content]);
+  const checkDot = (text: string) => {
+    const splitContent = content.split('\n');
+    if (splitContent.length === 1) return text;
+    const prevContent = splitContent[splitContent.length - 2];
+    const prevDetail = prevContent.split('- ')[1];
+    const isDot = prevContent.startsWith('- ') && prevDetail.length !== 0;
+    if (isDot && splitContent[splitContent.length - 1].length === 0) {
+      setContent(`${content}- `);
+      return `${content}- `;
+    }
+    const isEmptyDot = prevContent.startsWith('- ') && prevDetail.length === 0;
+    if (isEmptyDot) {
+      splitContent[splitContent.length - 2] = '';
+      const newContent = splitContent.join('\n');
+      setContent(newContent);
+      return newContent;
+    }
+    return text;
+  };
+  const context = useContent({ content: checkDot(content) });
 
   return (
     <TouchableWithoutFeedback onPress={() => setIsMenuOpen(false)}>
